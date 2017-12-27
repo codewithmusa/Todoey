@@ -2,9 +2,9 @@
 //  ViewController.swift
 //  Todoey
 //
-//  Created by yx on 27/12/2017.
+//  Created by MUSA B SESAY on 27/12/2017.
 //  Copyright © 2017 TechMussayApp. All rights reserved.
-//
+
 
 import UIKit
 
@@ -18,7 +18,6 @@ class TodoListViewController: UITableViewController {
             itemArray = items
         }
         
-       
          }
     //MARK - Tableview Datasource Methods
     
