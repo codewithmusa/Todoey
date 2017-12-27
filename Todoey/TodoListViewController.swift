@@ -10,11 +10,18 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
      var itemArray = ["Find Mike", "iOS App ", "Anadroid App"]
+    let defaults =  UserDefaults.standard
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+        if let   items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
         
        
          }
+    //MARK - Tableview Datasource Methods
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
@@ -45,6 +52,7 @@ class TodoListViewController: UITableViewController {
             //what will happen once the user click the Add Item button on our UIAlert
           //  print("Success")
             self.itemArray.append(textField.text!)
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
             self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
