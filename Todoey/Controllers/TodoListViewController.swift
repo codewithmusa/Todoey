@@ -12,7 +12,7 @@ class TodoListViewController: UITableViewController {
      var itemArray = [Item]()
     
    // let defaults =  UserDefaults.standard
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+   // let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let context = (UIApplication.shared.delegate as!
         AppDelegate).persistentContainer.viewContext
     
@@ -22,7 +22,9 @@ class TodoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(dataFilePath)
+        print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+       // print(dataFilePath)
         
         //let dataFilePath = FileManager.default.urls(for: doc)
         
