@@ -9,11 +9,13 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import ChameleonFramework
 
 class TodoListViewController:SwipeTableViewController {
     var todoItems: Results<Item>?
     let realm = try! Realm()
     
+    @IBOutlet weak var searchBar: UISearchBar!
     var selectedCategory : Category? {
         didSet{
           loadItems()
@@ -28,11 +30,52 @@ class TodoListViewController:SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        tableView.separatorStyle = .none
+      
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+          title = selectedCategory?.name
+       
+       guard let colourHex = selectedCategory?.colour else {fatalError()}
+         updateNavBar(withHexCode: colourHex)
+                // navigationController?.navigationBar.barTintColor = UIColor(hexString: colourHex
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        updateNavBar(withHexCode: "0080FF")
+    }
+    override func willMove(toParentViewController parent: UIViewController?) {
+        updateNavBar(withHexCode: "0080FF")
+    }
+
+    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        //guard let orignalColour = UIColor (hexString : "1D9BF6") else {fatalError()}
+//        updateNavBar(withHexCode: "1D9BF6")
+//    }
+//        navigationController?.navigationBar.barTintColor = orignalColour
+//        navigationController?.navigationBar.tintColor = FlatWhite()
+//        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: FlatWhite()]
+  // }
+    //MARK: - New Bar Steup Method
+    func updateNavBar(withHexCode colourHexCode: String){
+        guard let navBar = navigationController?.navigationBar else { fatalError("Navigation controller does not exist.")}
+        //navBar.barTintColor = navBarColour
+        //if let navBarColour = UIColor(HexColor: colourHex) {
+        guard let navBarColour = UIColor(hexString: colourHexCode) else {fatalError()}
+        navBar.barTintColor = navBarColour
+        navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+        searchBar.barTintColor = navBarColour
+        
+        
+    }
+    
       //  searchBar.delegate = self
 //        let request : NSFetchRequest<Item> = Item.fetchRequest()
 //        loadItems(with: request)
      //   let request : NSFetchRequest<Item> = Item.fetchRequest()
-        loadItems()
+       // loadItems()
         
         
        // print(dataFilePath)
@@ -61,7 +104,7 @@ class TodoListViewController:SwipeTableViewController {
 //            itemArray = items
 //        }
 
-         }
+      //   }
     
     
     //MARK - Tableview Datasource Methods
@@ -73,8 +116,23 @@ class TodoListViewController:SwipeTableViewController {
         
       //  let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        if   let item = todoItems?[indexPath.row] {
+        if  let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
+            //cell.backgroundColor = UIColor(hexString:item.colour ?? "1D9BF6")
+            //if let colour = FlatSkyBlue.darken(byPercentage: CGFloat(indexPath.row) /
+           // if let colour = UIColor(hexString:"1D9BF6")?.darken(byPercentage:
+            if let colour = UIColor(hexString:selectedCategory!.colour)?.darken(byPercentage:
+            CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+            cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
+            }
+//            print("version 1: \(CGFloat(indexPath.row / todoItems!.count))")
+//              print("version 2: \(CGFloat(indexPath.row) / CGFloat(todoItems!.count)))")
+//           // cell.backgroundColor = FlatSkyBlue().darken(byPercentage:
+                //currently on row #5
+                //there's total of 10 items todoItems
+            //CGFloat(indexPath.row / todoItems?.count)
+    
             //Ternary operation ==>
             // value = condition ? ValueIfTrue : valueIfFalse
             //  cell.accessoryType = item.done == true ? .checkmark : .none
@@ -103,7 +161,7 @@ class TodoListViewController:SwipeTableViewController {
             }
             } catch {
                 print("Error Saving done status \(error)")
-            }
+            } 
     }
       
         tableView.reloadData()
