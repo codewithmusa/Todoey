@@ -171,7 +171,7 @@ class TodoListViewController:SwipeTableViewController {
     }
    }
 
-
+}
 
 
 extension TodoListViewController: UISearchBarDelegate {
@@ -190,9 +190,8 @@ extension TodoListViewController: UISearchBarDelegate {
 
 
         }
-            
-    }
 
+    }
 }
 
 
